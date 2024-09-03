@@ -1,7 +1,9 @@
-export interface Group {
+import { UserInterface } from './user.model';
+
+export interface GroupInterface {
   groupId: number;
   groupName: string;
-  users: [];
-  admins: [];
+  users: UserInterface[];
+  admins: UserInterface[];
   channels: [];
 }

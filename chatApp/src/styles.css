@@ -2,4 +2,12 @@
 * {
   box-sizing: border-box;
   font-family: sans-serif;
+  /* margin: 0;
+  padding: 0; */
+  /* color: #f5f7fa; */
+}
+
+body {
+  margin: 0;
+  padding: 0;
 }

@@ -1,35 +1,39 @@
 import { Injectable } from '@angular/core';
-import { User } from '../models/User';
-import { UserRole } from '../models/user.model';
+import { HttpClient } from '@angular/common/http';
+import { UserInterface } from '../models/user.model';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  super = new User(
-    1,
-    'super',
-    '123',
-    'super@s.com',
-    UserRole.SUPER_USER,
-    'none'
-  );
-  users = [];
-  constructor() {
-    this.users.push(this.super);
-  }
+  URL = `http://localhost:3000`;
+  private loggedIn = new BehaviorSubject<boolean>(false);
+  loggedIn$ = this.loggedIn.asObservable();
 
-  validateLogin(username, password) {
-    console.log(username, password);
-    const user = this.users.find((user) => {
-      return user.username === username && user.password === password;
+  constructor(private http: HttpClient) {}
+
+  validateLogin = (username: string, password: string) =>
+    this.http.post<UserInterface>(this.URL + '/login', {
+      username,
+      password,
     });
 
-    if (user) return true;
+  setUser(user: object) {
+    this.loggedIn.next(true);
+    console.log(this.loggedIn);
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  getUser() {
+    if (this.loggedIn) return JSON.parse(localStorage.getItem('user'));
     else return false;
   }
 
-  getUsers() {
-    return this.users;
+  logout() {
+    localStorage.clear();
+    this.loggedIn.next(false);
+    console.log(this.loggedIn);
   }
 }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
 export class AppComponent {
   title = 'chatApp';
 
-  constructor(router: Router) {
+  constructor(public router: Router, public user: UserService) {
     router.navigateByUrl('login');
   }
 }

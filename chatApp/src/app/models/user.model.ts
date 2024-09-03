@@ -1,17 +1,38 @@
-export enum UserRole {
-  SUPER_USER = 'Super Admin',
-  GROUP_ADMIN = 'Group Admin',
-  USER = 'Chat User',
+export interface UserInterface {
+  valid: Boolean;
+  user: {
+    username: string;
+    password: string;
+    email: string;
+    id: number;
+    roles: [];
+    groups: [];
+  };
+
+  //join any channel once member of group
+  //register interest in a group
+  //leave group(s)
+  //deleteSelf
 }
 
-export interface UserInterface {
-  username: string;
-  password: string;
-  email?: string;
-  id: number;
-  roles: UserRole[];
-  groups?: [];
-}
+// export interface GroupAdminInterface {
+//   createGroup();
+//   createChannel();
+//   removeGroup();
+//   removeChannel();
+//   removeChatUsers();
+//   ban();
+// }
+
+// export interface SuperUserInterface extends GroupAdminInterface {
+//   promoteToAdmin();
+//   promoteToSuperAdmin();
+// }
+
+// export interface SuperUserInterface extends UserInterface {
+//   promote(user: UserInterface, level: UserRole);
+//   remove(user: UserInterface);
+// }
 
 // Super Admin
 //Promote user to admin

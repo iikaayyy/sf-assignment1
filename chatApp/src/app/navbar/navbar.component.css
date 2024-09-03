@@ -1,0 +1,26 @@
+nav {
+  padding: 12px 20px;
+  background-color: #f5f7fa;
+  color: #35353d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  padding: 8px 12px;
+  background-color: #d94841;
+  border-radius: 10px;
+  color: #f5f7fa;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #d55a53;
+}
+
+button:active {
+  background-color: #cd342c;
+}
