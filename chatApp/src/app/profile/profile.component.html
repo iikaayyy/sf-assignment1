@@ -1,0 +1,21 @@
+<div class="container">
+  <h2>Your Details</h2>
+  <div class="avatar">
+    <img
+      class="avatarImg"
+      width="150px"
+      height="150px"
+      src="./avatar.jpg"
+      alt="Avatar"
+    />
+  </div>
+
+  <p>Username:{{ user.username }}</p>
+  <p>Email:{{ user.email }}</p>
+  <h3>Your Groups</h3>
+  <ol>
+    <li *ngFor="let g of userGroups">{{ g.name }}</li>
+  </ol>
+
+  <button (click)="deleteAccount()">Delete Account</button>
+</div>

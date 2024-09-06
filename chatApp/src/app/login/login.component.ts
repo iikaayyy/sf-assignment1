@@ -8,22 +8,21 @@ import { isPlatformBrowser } from '@angular/common';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   username = '';
   password = '';
 
-  constructor(public router: Router, public user: UserService) {}
-
-  ngOnInit(): void {
-    this.user.loggedIn$.subscribe((val) => {
-      if (val === true) this.router.navigateByUrl('dashboard');
-    });
+  constructor(public router: Router, public user: UserService) {
+    console.log('login component');
   }
 
   login() {
     this.user.validateLogin(this.username, this.password).subscribe((res) => {
-      if (res.valid) this.user.setUser(res.user);
-      this.router.navigateByUrl('dashboard');
+      if (res.valid) {
+        this.user.setUser(res.user); //setting user in local storage
+        this.router.navigateByUrl('groups');
+      } else
+        alert(`Incorrect credentials/user doesn't exist. Please try again!`);
     });
 
     this.username = this.password = '';

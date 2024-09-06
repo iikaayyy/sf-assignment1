@@ -1,16 +1,4 @@
-// export interface UserInterface {
-//   username: string;
-//   password: string;
-//   email?: string;
-//   id: number;
-//   roles: UserRole[];
-//   groups?: [];
-
-//   //join any channel once member of group
-//   //register interest in a group
-//   //leave group(s)
-//   //deleteSelf
-// }
+const users = [];
 
 class User {
   roles = [];
@@ -21,14 +9,12 @@ class User {
     this.email = email;
     this.id = id;
     this.roles.push(roles);
-    if (groups) this.groups.push(groups);
+    // if (groups) this.groups.push(groups);
   }
 }
 
-const users = [
-  new User("super", "123", "super@super.com", 1, "SU"),
-  new User("yashee", "123", "y@y.com", 2, "GA"),
-  new User("john", "123", "j@j.com", 3, "CA"),
-];
+users.push(new User("super", "123", "super@super.com", users.length + 1, "SU"));
+users.push(new User("yashee", "123", "y@y.com", users.length + 1, "GA"));
+users.push(new User("john", "123", "j@j.com", users.length + 1, "CA"));
 
 module.exports = users;

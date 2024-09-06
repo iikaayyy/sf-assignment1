@@ -17,8 +17,18 @@ export class NavbarComponent implements OnInit {
     });
   }
 
+  dashboard() {
+    console.log('clicked');
+    this.router.navigateByUrl('/groups');
+  }
+
+  profile() {
+    this.router.navigateByUrl('/profile');
+    // console.log('logged out');
+  }
+
   logout() {
     this.user.logout();
-    this.router.navigateByUrl('login');
+    // this.router.navigateByUrl('login');
   }
 }

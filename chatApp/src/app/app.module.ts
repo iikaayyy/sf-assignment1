@@ -6,16 +6,24 @@ import {
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { Router } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
+import { GroupChatComponent } from './group-chat/group-chat.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, DashboardComponent, NavbarComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    DashboardComponent,
+    NavbarComponent,
+    GroupChatComponent,
+    ProfileComponent,
+  ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, CommonModule],
   providers: [provideClientHydration(), provideHttpClient(withFetch())],
   bootstrap: [AppComponent],

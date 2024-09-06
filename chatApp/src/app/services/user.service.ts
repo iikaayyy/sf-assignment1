@@ -1,18 +1,40 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserInterface } from '../models/user.model';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  URL = `http://localhost:3000`;
-  private loggedIn = new BehaviorSubject<boolean>(false);
-  loggedIn$ = this.loggedIn.asObservable();
+  private URL = `http://localhost:3000`;
 
-  constructor(private http: HttpClient) {}
+  //OBSERVABLE VALUES
+  private loggedIn = new BehaviorSubject<boolean>(this.getInitialLoginState());
+  loggedIn$ = this.loggedIn.asObservable(); //Current login status as an observable
+
+  private user = new BehaviorSubject<any>(this.getInitialUser());
+  user$ = this.user.asObservable(); //Current User as an observable
+
+  constructor(private http: HttpClient) {
+    console.log('user service');
+  }
+
+  private getInitialLoginState() {
+    if (typeof window !== 'undefined') {
+      return !!localStorage.getItem('user');
+    }
+    return false;
+  }
+
+  private getInitialUser(): any {
+    //if user exists in localStorage then return user
+    if (this.getInitialLoginState()) {
+      const user = JSON.parse(localStorage.getItem('user'));
+
+      return user;
+    } else return null;
+  }
 
   validateLogin = (username: string, password: string) =>
     this.http.post<UserInterface>(this.URL + '/login', {
@@ -22,18 +44,22 @@ export class UserService {
 
   setUser(user: object) {
     this.loggedIn.next(true);
-    console.log(this.loggedIn);
+    this.user.next(user);
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  getUser() {
-    if (this.loggedIn) return JSON.parse(localStorage.getItem('user'));
-    else return false;
+  deleteUser(userId) {
+    console.log(`delete user called`);
+    console.log(userId);
+    this.http
+      .post(this.URL + '/delete-user', { id: userId })
+      .subscribe((res) => {
+        this.logout();
+      });
   }
 
   logout() {
-    localStorage.clear();
+    localStorage.removeItem('user');
     this.loggedIn.next(false);
-    console.log(this.loggedIn);
   }
 }
