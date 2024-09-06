@@ -23,6 +23,9 @@ export class GroupService {
     this.getCurrentUser();
   }
 
+  public getGroupDetails = (groupName) =>
+    this.groups.find((group) => group.name === groupName);
+
   private getCurrentUser() {
     this.userService.user$.subscribe((val) => {
       this.user = val;
@@ -46,6 +49,15 @@ export class GroupService {
         this.otherGroups.next(otherGrps);
       }
     });
+  }
+
+  removeUser(userId, groupId) {
+    console.log(userId, groupId);
+    this.http
+      .post(this.URL + '/remove-user', { userId, groupId })
+      .subscribe((res: any) => {
+        this.userService.setUser(res.user);
+      });
   }
 
   addGroup(groupName) {

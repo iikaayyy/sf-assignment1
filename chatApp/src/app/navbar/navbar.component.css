@@ -1,11 +1,16 @@
 nav {
   padding: 12px 20px;
-  background-color: #e3e3e3;
-  color: #35353d;
+  background-color: #4a86f7;
+  color: #f5f7fa;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 2px solid #35353d;
+}
+
+h2,
+li {
+  cursor: pointer;
 }
 
 ul {

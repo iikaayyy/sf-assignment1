@@ -36,16 +36,6 @@ app.post("/create-group", (req, res) => {
   } else res.json({ status: "fail" });
 });
 
-app.post("/delete-group", (req, res) => {
-  const { name, userId: adminId } = req.body;
-  console.log(name, adminId);
-  if (groupNameAvailable(name)) {
-    createGroup(name, adminId);
-    const user = users.find((user) => user.id === adminId);
-    res.json({ status: "OK", user });
-  } else res.json({ status: "fail" });
-});
-
 app.post("/delete-user", (req, res) => {
   const { id } = req.body;
   // const { groups: userGroups } = users.at(id - 1);
@@ -54,8 +44,17 @@ app.post("/delete-user", (req, res) => {
   // for (const groupId of userGroups) {
   //   // groups.find(group => group.id === groupId)
   // }
-  console.log(users);
   res.json({ status: "ok" });
+});
+
+app.post("/remove-user", (req, res) => {
+  const { userId, groupId } = req.body;
+  // console.log(`groupid: ${groupId}`);
+  // console.log(users.at(userId - 1).groups);
+  // console.log(users.at(userId - 1).groups.indexOf(groupId));
+  const groupIndex = users.at(userId - 1).groups.indexOf(groupId);
+  users.at(userId - 1).groups.splice(groupIndex, 1);
+  res.json({ status: "ok", user: users.at(userId - 1) });
 });
 
 app.listen(3000, () => {

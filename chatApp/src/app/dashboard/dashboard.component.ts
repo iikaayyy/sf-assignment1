@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit {
   }
 
   enterGroup(groupName: string) {
-    console.log(groupName);
+    // console.log(groupName);
     this.router.navigate(['groups', groupName]);
   }
 

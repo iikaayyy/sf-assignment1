@@ -1,1 +1,24 @@
-<div class="container"></div>
+<div class="container">
+  <div class="channel-container">
+    <h2>{{ currGroup.name }}</h2>
+
+    <h3>Channels</h3>
+    <ul>
+      <li *ngFor="let channel of currGroup.channels">{{ channel }}</li>
+    </ul>
+  </div>
+
+  <div class="chat-container">
+    <header>
+      <h4>Group Options</h4>
+      <button (click)="leaveGroup()">Leave Group</button>
+    </header>
+    <div class="chat-box">
+      <!-- Your chat messages will go here -->
+    </div>
+    <div class="input-container">
+      <input type="text" placeholder="Type your message..." />
+      <button>Send</button>
+    </div>
+  </div>
+</div>
