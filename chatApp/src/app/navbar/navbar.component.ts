@@ -9,11 +9,24 @@ import { UserService } from '../services/user.service';
 })
 export class NavbarComponent implements OnInit {
   isLoggedIn = false;
+  currUser;
+  isAdmin;
   constructor(public router: Router, public user: UserService) {}
 
   ngOnInit(): void {
     this.user.loggedIn$.subscribe((val) => {
       this.isLoggedIn = val;
+    });
+
+    this.user.user$.subscribe((val) => {
+      this.currUser = val;
+      if (
+        this.isLoggedIn &&
+        (this.currUser.roles.includes('SU') ||
+          this.currUser.roles.includes('GA'))
+      ) {
+        this.isAdmin = true;
+      }
     });
   }
 

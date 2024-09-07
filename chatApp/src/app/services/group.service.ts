@@ -9,7 +9,11 @@ import { BehaviorSubject } from 'rxjs';
 export class GroupService {
   private URL = 'http://localhost:3000';
 
-  private groups; //all groups
+  public groups;
+
+  // = new BehaviorSubject<any>(undefined);
+  // groups$ = this.groups.asObservable();
+
   private user; //current user
 
   private userGroups = new BehaviorSubject<any>(undefined);
@@ -36,7 +40,6 @@ export class GroupService {
   private assignAllGroups() {
     this.http.get(this.URL + '/groups').subscribe((val) => {
       this.groups = val; //get all ghe gorups
-
       if (typeof window !== 'undefined' && this.user) {
         const userGrps = this.groups.filter((group) =>
           this.user.groups.includes(group.id)

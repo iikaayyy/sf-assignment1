@@ -10,7 +10,8 @@ import { GroupService } from '../services/group.service';
 export class AdminPanelComponent implements OnInit {
   requests;
   groupRequests;
-  currMode;
+  allUsers;
+  currMode = 'req';
 
   constructor(
     private user: UserService,
@@ -27,6 +28,11 @@ export class AdminPanelComponent implements OnInit {
       this.groupRequests = res;
       console.log(this.groupRequests);
     });
+
+    this.user.getAllUsers().subscribe((res) => {
+      this.allUsers = res;
+      console.log(this.allUsers);
+    });
   }
 
   approveRequest(req) {
@@ -38,13 +44,20 @@ export class AdminPanelComponent implements OnInit {
     });
   }
 
+  deleteUser(userId) {
+    console.log(userId);
+    this.user.deleteUser(userId);
+    this.user.getAllUsers().subscribe((res) => {
+      this.allUsers = res;
+    });
+    this.cdr.detectChanges();
+  }
+
   rejectRequest(req) {
     this.user.modifyReq(req, 'reject');
     this.user.getRequests().subscribe((res) => {
       this.requests = res;
       this.cdr.detectChanges();
-
-      // console.log(this.requests);
     });
   }
 
@@ -65,4 +78,16 @@ export class AdminPanelComponent implements OnInit {
       this.cdr.detectChanges();
     });
   }
+
+  reqMode() {
+    this.currMode = 'req';
+  }
+
+  groupMode() {
+    this.currMode = 'group';
+  }
 }
+
+//list all groups and their users
+//delete group
+//delete user

@@ -69,14 +69,18 @@ export class UserService {
   }
 
   deleteUser(userId) {
-    console.log(`delete user called`);
-    console.log(userId);
     this.http
       .post(this.URL + '/delete-user', { id: userId })
       .subscribe((res) => {
-        this.logout();
+        console.log(res);
       });
+
+    this.user$.subscribe((val) => {
+      if (val.id === userId) this.logout();
+    });
   }
+
+  getAllUsers = () => this.http.get(this.URL + '/users');
 
   logout() {
     localStorage.removeItem('user');

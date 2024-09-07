@@ -36,6 +36,10 @@ app.get("/requests", (req, res) => {
   res.json(requests);
 });
 
+app.get("/users", (req, res) => {
+  res.json(users);
+});
+
 app.post("/join-group", (req, res) => {
   const { userId, groupId, groupName, username } = req.body;
   if (
@@ -117,18 +121,19 @@ app.post("/create-group", (req, res) => {
 
 app.post("/delete-user", (req, res) => {
   const { id } = req.body;
-  const { groups: userGroups } = users.at(id - 1);
+  const { groups: userGroups } = users.find((u) => u.id === id);
+
+  const userIdx = users.findIndex((u) => u.id === id);
 
   //remove user from their groups users array
   for (const groupId of userGroups) {
     const group = groups.find((group) => group.id === groupId);
     const userIdxInGroup = group.users.indexOf(id);
     group.users.splice(userIdxInGroup, 1);
-    // console.log(groups);
   }
 
   //finally delete user
-  users.splice(id - 1, 1);
+  users.splice(userIdx, 1);
   res.json({ status: "ok" });
 });
 

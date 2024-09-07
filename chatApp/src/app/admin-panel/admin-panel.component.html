@@ -1,10 +1,10 @@
 <div class="container">
   <header>
-    <p class="nav-link">User Requests</p>
-    <p class="nav-link">Manage Groups</p>
+    <p (click)="reqMode()" class="nav-link">User Requests</p>
+    <p (click)="groupMode()" class="nav-link">Manage Groups</p>
   </header>
 
-  <div class="requests">
+  <div *ngIf="currMode === 'req'" class="requests">
     <div class="user-requests">
       <h3>New User Requests</h3>
 
@@ -50,6 +50,26 @@
             <button class="reject" (click)="rejectGroupRequest(request)">
               Reject
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="all-users">
+      <h3>All users</h3>
+
+      <div class="request-row header-row">
+        <div><strong>Username</strong></div>
+        <div><strong>Email ID</strong></div>
+        <div><strong>Actions</strong></div>
+      </div>
+
+      <div class="requests-grid">
+        <div class="request-row" *ngFor="let user of allUsers">
+          <div>{{ user.username }}</div>
+          <div>{{ user.email }}</div>
+          <div>
+            <button class="reject" (click)="deleteUser(user.id)">DELETE</button>
           </div>
         </div>
       </div>

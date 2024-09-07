@@ -15,7 +15,8 @@ header {
   padding: 20px 30px;
 }
 
-.user-requests {
+.user-requests,
+.group-requests {
   margin-bottom: 40px;
 }
 
