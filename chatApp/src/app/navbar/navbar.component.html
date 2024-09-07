@@ -2,7 +2,7 @@
   <h2 (click)="dashboard()">ChatApp</h2>
   <ul *ngIf="isLoggedIn">
     <li (click)="profile()">Profile</li>
-    <li>Admin Dashboard</li>
+    <li (click)="adminPanel()">Admin Dashboard</li>
   </ul>
   <button *ngIf="isLoggedIn" (click)="logout()">LOG OUT</button>
 </nav>

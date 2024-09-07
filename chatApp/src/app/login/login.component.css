@@ -1,8 +1,14 @@
 .container {
+  background-color: #4a86f7;
+  padding: 20px 30px;
+}
+
+.login,
+.signup {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #4a86f7;
+  /* background-color: #f3f3f3; */
   color: white;
   margin-right: auto;
   margin-left: auto;

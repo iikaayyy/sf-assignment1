@@ -51,6 +51,19 @@ export class GroupService {
     });
   }
 
+  joinGroup(groupName, groupId) {
+    console.log(this.user.username, groupName, groupId);
+    const body = {
+      userId: this.user.id,
+      groupId,
+      groupName,
+      username: this.user.username,
+    };
+    this.http.post(this.URL + '/join-group', body).subscribe((res) => {});
+  }
+
+  getGroupRequests = () => this.http.get(this.URL + '/join-group-reqs');
+
   removeUser(userId, groupId) {
     console.log(userId, groupId);
     this.http
@@ -71,17 +84,14 @@ export class GroupService {
       });
   }
 
-  // delete(groupName) {
-  //   // console.log(groupName, this.user.id);
-  //   this.http
-  //     .post(this.URL + '/create-group', {
-  //       name: groupName,
-  //       userId: this.user.id,
-  //     })
-  //     .subscribe((res: any) => {
-  //       if (res.status === 'OK') this.userService.setUser(res.user); //need to update user which will trigger this user to update
-  //     });
-  // }
+  modifyGroupReq(type, request) {
+    const body = { type, request };
+    this.http
+      .post(this.URL + '/modify-group-request', body)
+      .subscribe((val) => {
+        console.log(val);
+      });
+  }
 
   getGroups() {
     return this.groups;

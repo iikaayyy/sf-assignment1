@@ -14,6 +14,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
 import { GroupChatComponent } from './group-chat/group-chat.component';
 import { ProfileComponent } from './profile/profile.component';
+import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { ProfileComponent } from './profile/profile.component';
     NavbarComponent,
     GroupChatComponent,
     ProfileComponent,
+    AdminPanelComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, CommonModule],
   providers: [provideClientHydration(), provideHttpClient(withFetch())],

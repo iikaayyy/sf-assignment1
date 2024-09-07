@@ -1,13 +1,91 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const users = require("./users");
+const {
+  users,
+  createUser,
+  requests,
+  approveUser,
+  usernameAvailable,
+  groupRequests,
+} = require("./users");
 const { groups, createGroup, groupNameAvailable } = require("./groups");
 
 app.use(cors());
 app.use(express.json());
 
 // console.log(groups);
+
+//signUp route
+app.post("/sign-up", (req, res) => {
+  const { email, username, password } = req.body;
+  console.log(email, password, username);
+  //check if username exists in users array
+  if (
+    !usernameAvailable(users, username) &&
+    !usernameAvailable(requests, username)
+  ) {
+    requests.push({ email, username, password });
+    console.log(requests);
+    res.json({ status: "request sent" });
+  } else res.json({ status: "fail", message: "username already taken" });
+  //check if username exists in requests array
+});
+
+app.get("/requests", (req, res) => {
+  res.json(requests);
+});
+
+app.post("/join-group", (req, res) => {
+  const { userId, groupId, groupName, username } = req.body;
+  if (
+    !groupRequests.find((g) => g.userId === userId && g.groupId === groupId)
+  ) {
+    groupRequests.push({ groupName, username, groupId, userId });
+  }
+  // console.log(groupRequests);
+  res.json({ status: "request sent" });
+});
+
+app.get("/join-group-reqs", (req, res) => {
+  res.json(groupRequests);
+});
+
+app.post("/modify-request", (req, res) => {
+  const { type, req: request } = req.body;
+
+  const idx = requests.findIndex((r) => r.username === request.username);
+  requests.splice(idx, 1);
+  if (type === "approve") {
+    users.push(createUser(request.username, request.password, request.email));
+    console.log(users.at(-1));
+    res.json({ status: "added" });
+  } else res.json({ status: "denied" });
+});
+
+app.post("/modify-group-request", (req, res) => {
+  const {
+    type,
+    request: { userId, groupId },
+  } = req.body;
+  console.log(type, userId, groupId);
+
+  if (type === "approve") {
+    // console.log(users);
+    // console.log(users.find((u) => u.id === userId));
+    users.find((u) => u.id === userId).groups.push(groupId);
+    // console.log(groups.find((g) => g.id === groupId));
+    groups.find((g) => g.id === groupId).users.push(userId);
+  }
+
+  const idx = groupRequests.findIndex(
+    (g) => g.userId === userId && g.groupId === groupId
+  );
+
+  groupRequests.splice(idx, 1);
+
+  res.json({ status: "progress" });
+});
 
 //Login Route
 app.post("/login", (req, res) => {

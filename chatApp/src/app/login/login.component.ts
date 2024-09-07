@@ -12,19 +12,32 @@ export class LoginComponent {
   username = '';
   password = '';
 
+  email = '';
+
+  currMode = 'login';
+
   constructor(public router: Router, public user: UserService) {
     console.log('login component');
   }
 
   login() {
-    this.user.validateLogin(this.username, this.password).subscribe((res) => {
-      if (res.valid) {
-        this.user.setUser(res.user); //setting user in local storage
-        this.router.navigateByUrl('groups');
-      } else
-        alert(`Incorrect credentials/user doesn't exist. Please try again!`);
-    });
+    if (this.currMode === 'login') {
+      this.user.validateLogin(this.username, this.password).subscribe((res) => {
+        if (res.valid) {
+          this.user.setUser(res.user); //setting user in local storage
+          this.router.navigateByUrl('groups');
+        } else
+          alert(`Incorrect credentials/user doesn't exist. Please try again!`);
+      });
+    } else if (this.currMode === 'signup') {
+      if (this.email && this.password && this.username)
+        this.user.signUp(this.email, this.username, this.password);
+    }
 
-    this.username = this.password = '';
+    this.username = this.password = this.email = '';
+  }
+
+  switchMode() {
+    this.currMode = this.currMode === 'login' ? 'signup' : 'login';
   }
 }

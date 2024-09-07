@@ -1,4 +1,4 @@
-const users = require("./users");
+const { users } = require("./users");
 const superAdmin = users[0];
 
 const groups = [];

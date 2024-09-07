@@ -15,12 +15,12 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.userService.user$.subscribe((val) => {
       this.user = val;
-      console.log(this.user);
+      // console.log(this.user);
     });
 
     this.group.userGroups$.subscribe((val) => {
       this.userGroups = val;
-      console.log(this.userGroups);
+      // console.log(this.userGroups);
     });
   }
 

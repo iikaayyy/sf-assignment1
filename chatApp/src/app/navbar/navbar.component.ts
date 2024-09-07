@@ -17,6 +17,10 @@ export class NavbarComponent implements OnInit {
     });
   }
 
+  adminPanel() {
+    this.router.navigateByUrl('/admin-panel');
+  }
+
   dashboard() {
     console.log('clicked');
     this.router.navigateByUrl('/groups');

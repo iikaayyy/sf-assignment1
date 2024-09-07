@@ -24,7 +24,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.group.userGroups$.subscribe((val) => {
       this.userGroups = val;
-      console.log(this.userGroups);
+      // console.log(this.userGroups);
     });
 
     this.group.otherGroups$.subscribe((val) => {
@@ -51,8 +51,8 @@ export class DashboardComponent implements OnInit {
     this.groupName = '';
   }
 
-  join(groupId) {
-    console.log(groupId);
+  join(groupName, groupId) {
+    this.group.joinGroup(groupName, groupId);
   }
 }
 

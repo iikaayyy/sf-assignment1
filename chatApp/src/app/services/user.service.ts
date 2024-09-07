@@ -42,6 +42,26 @@ export class UserService {
       password,
     });
 
+  signUp(email, username, password) {
+    console.log(email, username, password);
+    this.http
+      .post(this.URL + '/sign-up', { email, username, password })
+      .subscribe((res) => {
+        console.log(res);
+      });
+  }
+
+  getRequests = () => this.http.get(this.URL + '/requests');
+
+  modifyReq(req, type) {
+    console.log(req, type);
+    this.http
+      .post(this.URL + '/modify-request', { req, type })
+      .subscribe((res) => {
+        console.log(res);
+      });
+  }
+
   setUser(user: object) {
     this.loggedIn.next(true);
     this.user.next(user);

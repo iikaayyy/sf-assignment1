@@ -34,7 +34,7 @@
     <div class="group" *ngFor="let g of otherGroups">
       <div class="group-name">
         <h4>{{ g.name }}</h4>
-        <button (click)="join(g.id)">Join</button>
+        <button (click)="join(g.name, g.id)">Join</button>
       </div>
     </div>
   </div>
