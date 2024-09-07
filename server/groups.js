@@ -10,9 +10,6 @@ function createGroup(groupName, adminId) {
   groups.push(
     new Group(groups.length + 1, groupName, ["Main", "Announcements"])
   );
-  groups.at(-1).addUser(superAdmin.id);
-  groups.at(-1).addUser(adminId);
-  // console.log(groups.at(-1));
 }
 
 class Group {
@@ -32,7 +29,6 @@ class Group {
   addUser(userId) {
     if (!this.users.includes(userId)) {
       this.users.push(userId); //add user to group
-      // console.log(users.at(-1));
       users.at(userId - 1).groups.push(this.id); //add group to user
     }
   }
@@ -47,7 +43,5 @@ groups.forEach((group) => group.addUser(superAdmin.id)); //add super admin to al
 groups[0].addUser(2);
 groups[1].addUser(2);
 groups[2].addUser(3);
-
-// console.log(users);
 
 module.exports = { groups, createGroup, groupNameAvailable };
