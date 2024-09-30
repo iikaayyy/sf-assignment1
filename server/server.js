@@ -77,9 +77,14 @@ app.post("/modify-group-request", (req, res) => {
   if (type === "approve") {
     // console.log(users);
     // console.log(users.find((u) => u.id === userId));
-    users.find((u) => u.id === userId).groups.push(groupId);
+    if (!users.find((u) => u.id === userId).groups.includes(groupId)) {
+      users.find((u) => u.id === userId).groups.push(groupId);
+    }
+
     // console.log(groups.find((g) => g.id === groupId));
-    groups.find((g) => g.id === groupId).users.push(userId);
+    if (!groups.find((g) => g.id === groupId).users.includes(userId)) {
+      groups.find((g) => g.id === groupId).users.push(userId);
+    }
   }
 
   const idx = groupRequests.findIndex(

@@ -12,6 +12,8 @@ export class GroupChatComponent implements OnInit {
   currGroup;
   currUser;
 
+  selectedChannel: string;
+
   constructor(
     private group: GroupService,
     private activatedRoute: ActivatedRoute,
@@ -33,5 +35,10 @@ export class GroupChatComponent implements OnInit {
   leaveGroup() {
     this.group.removeUser(this.currUser.id, this.currGroup.id);
     this.router.navigateByUrl('/groups');
+  }
+
+  joinChannel() {
+    if (this.selectedChannel) this.router.navigateByUrl('/chat');
+    else alert('please select a channel to chat in');
   }
 }

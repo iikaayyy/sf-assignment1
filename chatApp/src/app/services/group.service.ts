@@ -89,6 +89,7 @@ export class GroupService {
 
   modifyGroupReq(type, request) {
     const body = { type, request };
+    console.log(request);
     this.http
       .post(this.URL + '/modify-group-request', body)
       .subscribe((val) => {

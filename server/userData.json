@@ -1,0 +1,37 @@
+[
+  {
+    "roles": [
+      "SU"
+    ],
+    "groups": [],
+    "username": "super",
+    "password": "123",
+    "email": "super@super.com",
+    "id": 1
+  },
+  {
+    "roles": [
+      "GA"
+    ],
+    "groups": [
+      3,
+      3,
+      1,
+      1
+    ],
+    "username": "yashee",
+    "password": "123",
+    "email": "y@y.com",
+    "id": 2
+  },
+  {
+    "roles": [
+      "CA"
+    ],
+    "groups": [],
+    "username": "john",
+    "password": "123",
+    "email": "j@j.com",
+    "id": 3
+  }
+]

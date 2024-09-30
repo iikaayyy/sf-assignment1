@@ -63,15 +63,17 @@ export class AdminPanelComponent implements OnInit {
 
   approveGroupRequest(req) {
     this.group.modifyGroupReq('approve', req);
-    this.group.getGroupRequests().subscribe((res) => {
-      this.groupRequests = res;
-      console.log(this.groupRequests);
-      this.cdr.detectChanges();
-    });
+
+    this.updateGroupRequests();
   }
 
   rejectGroupRequest(req) {
     this.group.modifyGroupReq('reject', req);
+
+    this.updateGroupRequests();
+  }
+
+  updateGroupRequests() {
     this.group.getGroupRequests().subscribe((res) => {
       this.groupRequests = res;
       console.log(this.groupRequests);
@@ -87,7 +89,3 @@ export class AdminPanelComponent implements OnInit {
     this.currMode = 'group';
   }
 }
-
-//list all groups and their users
-//delete group
-//delete user

@@ -15,6 +15,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { GroupChatComponent } from './group-chat/group-chat.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
+import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { AdminPanelComponent } from './admin-panel/admin-panel.component';
     GroupChatComponent,
     ProfileComponent,
     AdminPanelComponent,
+    ChatComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, CommonModule],
   providers: [provideClientHydration(), provideHttpClient(withFetch())],
