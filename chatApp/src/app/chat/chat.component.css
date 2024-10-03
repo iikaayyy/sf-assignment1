@@ -41,6 +41,70 @@
   margin-bottom: 25px;
 }
 
+.messages {
+  padding: 15px 15px;
+}
+
+.msg {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.time {
+  font-size: 12px;
+  color: #444;
+  margin-left: 40px;
+  padding-bottom: 3px;
+}
+
+.msg-content {
+  display: flex;
+  align-items: center;
+}
+
+.profile,
+.profile-img {
+  width: 27.5px;
+  height: 27.5px;
+  border-radius: 50%;
+}
+
+.profile {
+  margin-right: 8px;
+  border: 1px solid black;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.083);
+  overflow: hidden;
+  display: inline-block;
+}
+
+.msg-text {
+  background-color: rgb(220, 220, 220);
+  padding: 6px 9px;
+  border-radius: 5px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.083);
+  margin-right: 3px;
+  display: inline-block;
+}
+
+.self {
+  align-items: flex-end;
+}
+
+.self > .msg-content {
+  flex-direction: row-reverse;
+}
+
+.self .profile {
+  margin-left: 8px;
+  margin-right: 0px;
+}
+
+.self > .time {
+  margin-right: 40px;
+  margin-left: 0;
+}
+
 input {
   width: 93%;
 }

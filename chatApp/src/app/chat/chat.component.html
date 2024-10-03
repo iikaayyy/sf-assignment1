@@ -10,7 +10,32 @@
     <div class="chat-box">
       <div class="options">
         <button>Video Chat 📹</button>
-        <button class="leave">Leave Channel</button>
+        <button (click)="leaveChannel()" class="leave">Leave Channel</button>
+      </div>
+
+      <div class="messages">
+        <div
+          class="msg"
+          *ngFor="let msg of messages"
+          [ngClass]="{
+            self: msg.username === currUser.username,
+            'received-message': msg.username !== currUser.username
+          }"
+        >
+          <p class="time">{{ msg.username }} at {{ msg.time }}</p>
+
+          <div class="msg-content">
+            <div class="profile">
+              <img
+                [src]="msg.avatar"
+                width="50"
+                height="50"
+                class="profile-img"
+              />
+            </div>
+            <p class="msg-text">{{ msg.content }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

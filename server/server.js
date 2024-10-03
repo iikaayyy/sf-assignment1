@@ -16,7 +16,7 @@ const { Server } = require("socket.io");
 const app = express();
 
 app.use(cors());
-// app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/avatars", express.static(path.join(__dirname, "avatars")));
 
@@ -28,13 +28,28 @@ const io = new Server(server, {
   },
 });
 
-// io.on("connection", (socket) => {
-//   console.log(`Welcome ${socket.id}`);
+io.on("connection", (socket) => {
+  console.log(`${socket.id} just joined!`);
 
-//   socket.on("message", (msg) => {
-//     socket.emit("message", msg);
-//   });
-// });
+  socket.on("join-room", ({ roomName, username }) => {
+    socket.join(roomName);
+    socket
+      .to(roomName)
+      .emit("newUser", `${username.toUpperCase()} just joined the chat!`);
+  });
+
+  socket.on("message", (m) => {
+    // console.log(`emitting message: ${m.message}`);
+    socket.to(m.room).emit("receive-msg", m);
+  });
+
+  socket.on("newDisconnection", ({ username, roomName }) => {
+    io.to(roomName).emit(
+      "newDisconnection",
+      `${username.toUpperCase()} just left the chat!`
+    );
+  });
+});
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -161,7 +176,7 @@ app.get("/groups", (req, res) => {
   res.json(groups);
 });
 
-//Login Route
+//create Route
 app.post("/create-group", (req, res) => {
   const { name, userId: adminId } = req.body;
 
