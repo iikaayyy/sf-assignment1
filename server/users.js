@@ -11,7 +11,7 @@ class User {
     this.email = email;
     this.id = id;
     this.roles.push(roles);
-    // if (groups) this.groups.push(groups);
+    this.avatar = "http://localhost:3000/avatars/default.png";
   }
 }
 
@@ -22,8 +22,6 @@ function createUser(username, password, email, role = "CA") {
 const usernameAvailable = (arr, username) =>
   arr.find((el) => el.username === username);
 
-function approveUser() {}
-
 users.push(createUser("super", "123", "super@super.com", "SU"));
 users.push(createUser("yashee", "123", "y@y.com", "GA"));
 users.push(createUser("john", "123", "j@j.com", "CA"));
@@ -31,7 +29,6 @@ users.push(createUser("john", "123", "j@j.com", "CA"));
 module.exports = {
   users,
   createUser,
-  approveUser,
   usernameAvailable,
   requests,
   groupRequests,

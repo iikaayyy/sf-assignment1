@@ -11,6 +11,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'groups', component: DashboardComponent },
   { path: 'groups/:name', component: GroupChatComponent },
+  { path: 'groups/:name/:channelName', component: ChatComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'admin-panel', component: AdminPanelComponent },
   { path: 'chat', component: ChatComponent },

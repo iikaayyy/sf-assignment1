@@ -20,6 +20,7 @@ export class UserService {
     console.log('user service');
   }
 
+  //get login state
   private getInitialLoginState() {
     if (typeof window !== 'undefined') {
       return !!localStorage.getItem('user');
@@ -27,6 +28,7 @@ export class UserService {
     return false;
   }
 
+  //get user if initialLoginState is true
   private getInitialUser(): any {
     //if user exists in localStorage then return user
     if (this.getInitialLoginState()) {
@@ -36,12 +38,14 @@ export class UserService {
     } else return null;
   }
 
+  //validate login details
   validateLogin = (username: string, password: string) =>
     this.http.post<UserInterface>(this.URL + '/login', {
       username,
       password,
     });
 
+  //sign up route
   signUp(email, username, password) {
     console.log(email, username, password);
     this.http
@@ -51,7 +55,7 @@ export class UserService {
       });
   }
 
-  getRequests = () => this.http.get(this.URL + '/requests');
+  getRequests = () => this.http.get(this.URL + '/requests'); //get sign up reqs
 
   modifyReq(req, type) {
     console.log(req, type);
@@ -60,7 +64,7 @@ export class UserService {
       .subscribe((res) => {
         console.log(res);
       });
-  }
+  } //accept or reject signUp request
 
   setUser(user: object) {
     this.loggedIn.next(true);
@@ -85,5 +89,16 @@ export class UserService {
   logout() {
     localStorage.removeItem('user');
     this.loggedIn.next(false);
+  }
+
+  uploadAvatar(file: File) {
+    const formData = new FormData();
+    // console.log(file, userId);
+    formData.append('avatar', file); // Append the file to FormData
+
+    this.http.post(this.URL + '/upload-avatar', formData).subscribe((res) => {
+      console.log(res);
+      alert('log in again to view changes!');
+    });
   }
 }

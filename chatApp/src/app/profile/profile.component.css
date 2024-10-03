@@ -14,7 +14,15 @@ ol {
   height: 150px;
   background-color: pink;
   border-radius: 50%;
-  margin-bottom: 20px;
+  overflow: hidden;
+  border: 1px solid black;
+}
+
+.avatar-img {
+  object-fit: contain;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
 }
 
 h3 {

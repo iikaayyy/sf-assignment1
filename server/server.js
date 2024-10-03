@@ -1,20 +1,68 @@
 const express = require("express");
-const app = express();
-const cors = require("cors");
+const path = require("path");
+const http = require("http");
+const multer = require("multer");
 const {
   users,
   createUser,
   requests,
-  approveUser,
   usernameAvailable,
   groupRequests,
 } = require("./users");
 const { groups, createGroup, groupNameAvailable } = require("./groups");
+const cors = require("cors");
+const { Server } = require("socket.io");
+
+const app = express();
 
 app.use(cors());
+// app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use("/avatars", express.static(path.join(__dirname, "avatars")));
 
-// console.log(groups);
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:4200", // Replace with your client-side URL
+    methods: ["GET", "POST"],
+  },
+});
+
+// io.on("connection", (socket) => {
+//   console.log(`Welcome ${socket.id}`);
+
+//   socket.on("message", (msg) => {
+//     socket.emit("message", msg);
+//   });
+// });
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "avatars"); // Folder to store the uploaded files
+  },
+  filename: (req, file, cb) => {
+    // Wait until Multer has processed the request body
+    const ext = path.extname(file.originalname); // Get file extension
+    console.log(file.originalname);
+    cb(null, file.originalname); // Save the file with userId in the name
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post("/upload-avatar", upload.single("avatar"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send("No file uploaded.");
+  }
+  const userId = Number(req.file.originalname.split(".")[0].split("").pop());
+  const ext = req.file.originalname.split(".")[1];
+  for (const user of users) {
+    if (user.id === userId) {
+      user.avatar = `http://localhost:3000/avatars/user${userId}.${ext}`;
+    }
+  }
+  res.json({ status: "upload successfull" });
+});
 
 //signUp route
 app.post("/sign-up", (req, res) => {
@@ -156,8 +204,6 @@ app.post("/remove-user", (req, res) => {
   res.json({ status: "ok", user: users.at(userId - 1) });
 });
 
-// console.log(groups);
-
-app.listen(3000, () => {
+server.listen(3000, () => {
   console.log(`Server listening at port 3000`);
 });

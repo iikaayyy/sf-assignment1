@@ -38,7 +38,14 @@ export class GroupChatComponent implements OnInit {
   }
 
   joinChannel() {
-    if (this.selectedChannel) this.router.navigateByUrl('/chat');
+    // console.log(this.selectedChannel);
+    // console.log(this.currGroup.name);
+    if (this.selectedChannel)
+      this.router.navigate([
+        'groups',
+        this.currGroup.name,
+        this.selectedChannel,
+      ]);
     else alert('please select a channel to chat in');
   }
 }

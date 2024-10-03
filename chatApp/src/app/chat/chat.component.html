@@ -2,14 +2,10 @@
   <div class="channel-chat">
     <div class="channel-details">
       <h3>Channel Name</h3>
-      <p class="channel-name">Main</p>
+      <p class="channel-name">{{ channelName }}</p>
 
       <h4>Users</h4>
-      <ul>
-        <li>Yash</li>
-        <li>Super</li>
-        <li>Ekansh</li>
-      </ul>
+      <ul></ul>
     </div>
     <div class="chat-box">
       <div class="options">
@@ -19,7 +15,7 @@
     </div>
   </div>
   <div class="chat-input">
-    <input />
-    <button>Send</button>
+    <input [(ngModel)]="msgText" />
+    <button (click)="sendMessage()">Send</button>
   </div>
 </div>
