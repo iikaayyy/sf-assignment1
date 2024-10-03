@@ -105,6 +105,22 @@
   margin-left: 0;
 }
 
+.status {
+  align-items: center;
+}
+
+.status .time,
+.status .profile {
+  display: none;
+}
+
+.status .msg-text {
+  background-color: #818ea6;
+  font-weight: 500;
+  padding: 10px;
+  border: 1px solid black;
+}
+
 input {
   width: 93%;
 }

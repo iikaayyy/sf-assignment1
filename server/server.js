@@ -31,23 +31,21 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log(`${socket.id} just joined!`);
 
-  socket.on("join-room", ({ roomName, username }) => {
-    socket.join(roomName);
-    socket
-      .to(roomName)
-      .emit("newUser", `${username.toUpperCase()} just joined the chat!`);
+  socket.on("join-room", (data) => {
+    console.log(data);
+
+    socket.join(data.room);
+    socket.to(data.room).emit("receive-msg", data);
   });
 
-  socket.on("message", (m) => {
+  socket.on("message", (data) => {
     // console.log(`emitting message: ${m.message}`);
-    socket.to(m.room).emit("receive-msg", m);
+    socket.to(data.room).emit("receive-msg", data);
   });
 
-  socket.on("newDisconnection", ({ username, roomName }) => {
-    io.to(roomName).emit(
-      "newDisconnection",
-      `${username.toUpperCase()} just left the chat!`
-    );
+  socket.on("leave-room", (data) => {
+    socket.leave();
+    socket.to(data.room).emit("receive-msg", data);
   });
 });
 
