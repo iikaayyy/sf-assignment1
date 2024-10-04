@@ -32,7 +32,7 @@ io.on("connection", (socket) => {
   console.log(`${socket.id} just joined!`);
 
   socket.on("join-room", (data) => {
-    console.log(data);
+    // console.log(data);
 
     socket.join(data.room);
     socket.to(data.room).emit("receive-msg", data);
@@ -47,6 +47,12 @@ io.on("connection", (socket) => {
     socket.leave();
     socket.to(data.room).emit("receive-msg", data);
   });
+
+  socket.on("imageMessage", (data) => {
+    // Broadcast the image to others in the room
+    // console.log(data);
+    socket.to(data.room).emit("receive-msg", data);
+  });
 });
 
 const storage = multer.diskStorage({
@@ -56,7 +62,7 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     // Wait until Multer has processed the request body
     const ext = path.extname(file.originalname); // Get file extension
-    console.log(file.originalname);
+    // console.log(file.originalname);
     cb(null, file.originalname); // Save the file with userId in the name
   },
 });
@@ -80,14 +86,14 @@ app.post("/upload-avatar", upload.single("avatar"), (req, res) => {
 //signUp route
 app.post("/sign-up", (req, res) => {
   const { email, username, password } = req.body;
-  console.log(email, password, username);
+  // console.log(email, password, username);
   //check if username exists in users array
   if (
     !usernameAvailable(users, username) &&
     !usernameAvailable(requests, username)
   ) {
     requests.push({ email, username, password });
-    console.log(requests);
+    // console.log(requests);
     res.json({ status: "request sent" });
   } else res.json({ status: "fail", message: "username already taken" });
   //check if username exists in requests array
