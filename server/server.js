@@ -53,6 +53,20 @@ io.on("connection", (socket) => {
     // console.log(data);
     socket.to(data.room).emit("receive-msg", data);
   });
+
+  socket.on("join-video-room", (data) => {
+    data.content = `${data.content} at ${data.time}`;
+    socket.to(data.room).emit("receive-msg", data);
+  });
+
+  socket.on("leave-video-room", (data) => {
+    data.content = `${data.content} at ${data.time}`;
+    socket.to(data.room).emit("receive-msg", data);
+  });
+
+  socket.on("new-peer", (data) => {
+    socket.to(data.room).emit("new-peer", data);
+  });
 });
 
 const storage = multer.diskStorage({

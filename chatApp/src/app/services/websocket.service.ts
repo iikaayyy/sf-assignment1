@@ -1,18 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WebsocketService {
-  socket: Socket;
   private activeUsersSubject = new BehaviorSubject<string[]>([]);
   private messagesSubject = new BehaviorSubject<any[]>([]);
+  private isConnected = new BehaviorSubject<Boolean>(false);
+  private newPeer = new Subject<any>();
 
   activeUsers$ = this.activeUsersSubject.asObservable();
   messages$ = this.messagesSubject.asObservable();
+  isConnected$ = this.isConnected.asObservable();
 
+  socket: Socket;
   activeUsers = [];
   messages = [];
 
@@ -20,10 +23,13 @@ export class WebsocketService {
 
   connect() {
     this.socket = io('http://localhost:3000'); //initialize socket
+    this.isConnected.next(true);
   }
 
+  //LISTENERS
   setupListeners(user, room) {
     this.socket.on('connect', () => {
+      console.log('connected');
       const msgObject = this.parseMessage(
         `UPDATE: ${user.username} joined the channel`,
         'status',
@@ -51,8 +57,24 @@ export class WebsocketService {
       this.addActiveUser(m.username);
       this.messagesSubject.next([...this.messagesSubject.getValue(), m]);
     });
+
+    this.socket.on('new-peer', (data) => {
+      console.log(`new peer`, data);
+      this.newPeer.next(data);
+    });
   }
 
+  onNewPeerJoined() {
+    return this.newPeer.asObservable();
+  }
+
+  //EMITTING FOR VIDEO
+  emitPeerId(user, peerId, room) {
+    const data = { user, peerId, room };
+    this.socket.emit('new-peer', data);
+  }
+
+  //EMITTING FOR CHAT
   sendMessage(content, user, room) {
     const msgObject = this.parseMessage(content, 'message', user, room);
 
@@ -70,6 +92,7 @@ export class WebsocketService {
   }
 
   disconnect(user, room) {
+    console.log('disconnected');
     const msgObject = this.parseMessage(
       `UPDATE: ${user.username} left the channel`,
       'status',
@@ -77,12 +100,37 @@ export class WebsocketService {
       room
     );
 
-    // const idx = this.activeUsers.findIndex((u) => u === user.username);
-    // if (idx != -1) this.activeUsers.splice(idx, 1);
     this.removeActiveUser(user.username);
+    this.isConnected.next(false);
+    this.messagesSubject.next([]);
+    this.activeUsersSubject.next([]);
 
     this.socket.emit('leave-room', msgObject);
     this.socket.disconnect();
+  }
+
+  joinVideoRoom(user, room) {
+    const msgObject = this.parseMessage(
+      `${user.username} has joined video chat room`,
+      'status',
+      user,
+      room
+    );
+
+    // console.log(msgObject);
+    this.socket.emit('join-video-room', msgObject);
+  }
+
+  leaveVideoRoom(user, room) {
+    const msgObject = this.parseMessage(
+      `${user.username} has left video chat room`,
+      'status',
+      user,
+      room
+    );
+
+    // console.log(msgObject);
+    this.socket.emit('leave-video-room', msgObject);
   }
 
   private addActiveUser(username: string) {

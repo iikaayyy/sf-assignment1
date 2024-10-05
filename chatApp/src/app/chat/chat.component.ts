@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 // import { Socket, io } from 'socket.io-client';
 import { UserService } from '../services/user.service';
 import { WebsocketService } from '../services/websocket.service';
@@ -17,10 +17,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   roomName;
   msgText = '';
   selectedImage: string | ArrayBuffer | null = null;
+  alreadyConnected;
 
   messages = [];
   activeUsers = [];
-  // socket: Socket;
+  isVideoChat;
+  routerSubscription: Subscription;
 
   private subscriptions: Subscription = new Subscription();
 
@@ -45,15 +47,20 @@ export class ChatComponent implements OnInit, OnDestroy {
       // console.log(this.currUser.avatar);
     });
 
-    // this.socket = io('http://localhost:3000'); //initialize socket
+    //get connection status
+    this.ws.isConnected$.subscribe((val) => {
+      this.alreadyConnected = val;
+    });
 
-    this.ws.connect();
-    this.ws.setupListeners(this.currUser, this.roomName);
-    this.subscriptions.add(
-      this.ws.activeUsers$.subscribe((u) => {
-        this.activeUsers = u;
-      })
-    );
+    if (!this.alreadyConnected) {
+      this.ws.connect();
+      this.ws.setupListeners(this.currUser, this.roomName);
+      this.subscriptions.add(
+        this.ws.activeUsers$.subscribe((u) => {
+          this.activeUsers = u;
+        })
+      );
+    }
 
     this.subscriptions.add(
       this.ws.messages$.subscribe((m) => {
@@ -61,49 +68,32 @@ export class ChatComponent implements OnInit, OnDestroy {
       })
     );
 
-    //connection logic
-    // this.socket.on('connect', () => {
-    //   const msgObject = this.parseMessage(
-    //     `UPDATE: ${this.currUser.username} joined the channel`,
-    //     'status'
-    //   );
-    //   this.socket.emit('join-room', msgObject);
-    //   this.activeUsers.push(this.currUser.username);
-    // });
+    // this.ws.connect();
+    // this.ws.setupListeners(this.currUser, this.roomName);
+    // this.subscriptions.add(
+    //   this.ws.activeUsers$.subscribe((u) => {
+    //     this.activeUsers = u;
+    //   })
+    // );
 
-    //message receiving and status handling
-    // this.socket.on('receive-msg', (m) => {
-    //   if (!this.activeUsers.includes(m.username)) {
-    //     this.activeUsers.push(m.username);
-    //   }
-
-    //   if (m.type === 'status' && m.content.split(' ').includes('left')) {
-    //     const idx = this.activeUsers.findIndex((u) => u === m.username);
-    //     idx != -1 ? this.activeUsers.splice(idx, 1) : 'not found';
-    //   }
-
-    //   this.messages.push(m);
-    //   // console.log('receiving', this.messages);
-    // });
+    // this.subscriptions.add(
+    //   this.ws.messages$.subscribe((m) => {
+    //     this.messages = m;
+    //   })
+    // );
   }
 
   //cleanup logic -> disconnect socket and emit leave event
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-    this.ws.disconnect(this.currUser, this.roomName);
-    // const msgObject = this.parseMessage(
-    //   `UPDATE: ${this.currUser.username} left the channel`,
-    //   'status'
-    // );
-
-    // const idx = this.activeUsers.findIndex((u) => u === this.currUser.username);
-    // if (idx != -1) this.activeUsers.splice(idx, 1);
-
-    // this.socket.emit('leave-room', msgObject);
-    // this.socket.disconnect();
+    console.log(this.isVideoChat);
+    if (!this.isVideoChat) {
+      this.subscriptions.unsubscribe();
+      this.ws.disconnect(this.currUser, this.roomName);
+    } else console.log('navigating to video chat component');
   }
 
   startVideoChat() {
+    this.isVideoChat = true;
     this.router.navigate([
       'groups',
       this.groupName,
@@ -145,17 +135,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.ws.sendMessage(this.msgText, this.currUser, this.roomName);
     this.msgText = '';
-    // const msgObject = this.parseMessage(this.msgText, 'message');
-
-    // this.messages.push(msgObject);
-
-    // console.log('sending', this.messages);
-    // this.socket.emit('message', msgObject);
   }
 
   checkEnter(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      // this.sendMessage();
       this.ws.sendMessage(this.msgText, this.currUser, this.roomName);
       this.msgText = '';
 
@@ -166,8 +149,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   onImageSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      // console.log('File selected:', input.files[0]);
-
       const file = input.files[0];
       const reader = new FileReader();
 
@@ -175,7 +156,6 @@ export class ChatComponent implements OnInit, OnDestroy {
         // Store the Base64-encoded image
         this.selectedImage = reader.result;
 
-        // You can send the image here or attach it to the sendMessage() logic
         this.sendImage();
       };
       reader.readAsDataURL(file); // Convert to Base64
@@ -184,14 +164,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   sendImage() {
     if (this.selectedImage) {
-      // const msgData = this.parseMessage(this.selectedImage, 'image');
-      // console.log('msgData', msgData);
-
-      // this.messages.push(msgData);
       this.ws.sendImage(this.selectedImage, this.currUser, this.roomName);
-
-      // Emit the image event via WebSocket
-      // this.socket.emit('imageMessage', msgData);
 
       // Clear the selected image after sending
       this.selectedImage = null;
