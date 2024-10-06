@@ -10,8 +10,11 @@ const {
   groupRequests,
 } = require("./users");
 const { groups, createGroup, groupNameAvailable } = require("./groups");
+const { MongoClient } = require("mongodb");
+
 const cors = require("cors");
 const { Server } = require("socket.io");
+const { readJSONFile, writeJSONFile } = require("./fileOperations.js");
 
 const app = express();
 
@@ -19,6 +22,14 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/avatars", express.static(path.join(__dirname, "avatars")));
+
+let db;
+async function connectToDB() {
+  const client = new MongoClient(`mongodb://localhost:27017/`);
+  await client.connect();
+  db = client.db("chatApp");
+}
+connectToDB();
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -32,14 +43,26 @@ io.on("connection", (socket) => {
   console.log(`${socket.id} just joined!`);
 
   socket.on("join-room", (data) => {
-    // console.log(data);
-
     socket.join(data.room);
     socket.to(data.room).emit("receive-msg", data);
   });
 
-  socket.on("message", (data) => {
-    // console.log(`emitting message: ${m.message}`);
+  socket.on("message", async (data) => {
+    console.log(data);
+
+    //data.content data.username data.room data.type data.time
+    const collectionName = data.room;
+
+    const collection = db.collection(collectionName);
+
+    await collection.insertOne({
+      username: data.username,
+      message: data.content,
+      type: data.type,
+      date: new Date().toLocaleDateString(),
+      time: new Date().toLocaleTimeString(),
+    });
+
     socket.to(data.room).emit("receive-msg", data);
   });
 
@@ -48,9 +71,18 @@ io.on("connection", (socket) => {
     socket.to(data.room).emit("receive-msg", data);
   });
 
-  socket.on("imageMessage", (data) => {
-    // Broadcast the image to others in the room
-    // console.log(data);
+  socket.on("imageMessage", async (data) => {
+    const collectionName = data.room;
+
+    const collection = db.collection(collectionName);
+
+    await collection.insertOne({
+      username: data.username,
+      type: data.type,
+      date: new Date().toLocaleDateString(),
+      time: new Date().toLocaleTimeString(),
+    });
+
     socket.to(data.room).emit("receive-msg", data);
   });
 
@@ -83,6 +115,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+//edits users
 app.post("/upload-avatar", upload.single("avatar"), (req, res) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
@@ -98,36 +131,50 @@ app.post("/upload-avatar", upload.single("avatar"), (req, res) => {
 });
 
 //signUp route
-app.post("/sign-up", (req, res) => {
+app.post("/sign-up", async (req, res) => {
   const { email, username, password } = req.body;
-  // console.log(email, password, username);
-  //check if username exists in users array
+  let reqs = await readJSONFile("requests.json");
+  console.log(reqs);
+
+  //push request to requests.json
   if (
     !usernameAvailable(users, username) &&
     !usernameAvailable(requests, username)
   ) {
     requests.push({ email, username, password });
+    // await writeJSONFile("requests.json", requests);
     // console.log(requests);
+
     res.json({ status: "request sent" });
   } else res.json({ status: "fail", message: "username already taken" });
-  //check if username exists in requests array
 });
 
-app.get("/requests", (req, res) => {
+app.get("/requests", async (req, res) => {
+  // const reqs = await readJSONFile("requests.json");
   res.json(requests);
 });
 
+app.get("/", (req, res) => {
+  readJSONFile("groupData.json").then((data) => res.json(data));
+});
+
 app.get("/users", (req, res) => {
+  //read and return the users file
   res.json(users);
 });
 
-app.post("/join-group", (req, res) => {
+app.post("/join-group", async (req, res) => {
   const { userId, groupId, groupName, username } = req.body;
+  let groupReqs = readJSONFile("groupRequests.json");
+  //add request to groupRequests
   if (
     !groupRequests.find((g) => g.userId === userId && g.groupId === groupId)
   ) {
     groupRequests.push({ groupName, username, groupId, userId });
+    console.log(`group reqs`, groupRequests);
+    await writeJSONFile("groupRequests.json", groupRequests);
   }
+
   // console.log(groupRequests);
   res.json({ status: "request sent" });
 });
@@ -136,14 +183,17 @@ app.get("/join-group-reqs", (req, res) => {
   res.json(groupRequests);
 });
 
-app.post("/modify-request", (req, res) => {
+app.post("/modify-request", async (req, res) => {
   const { type, req: request } = req.body;
+  const u = readJSONFile("userData.json");
 
   const idx = requests.findIndex((r) => r.username === request.username);
   requests.splice(idx, 1);
+  writeJSONFile("requests.json", requests);
   if (type === "approve") {
     users.push(createUser(request.username, request.password, request.email));
     console.log(users.at(-1));
+    writeJSONFile("userData.json", users);
     res.json({ status: "added" });
   } else res.json({ status: "denied" });
 });
@@ -156,15 +206,14 @@ app.post("/modify-group-request", (req, res) => {
   console.log(type, userId, groupId);
 
   if (type === "approve") {
-    // console.log(users);
-    // console.log(users.find((u) => u.id === userId));
     if (!users.find((u) => u.id === userId).groups.includes(groupId)) {
       users.find((u) => u.id === userId).groups.push(groupId);
+      writeJSONFile("userData.json", users);
     }
 
-    // console.log(groups.find((g) => g.id === groupId));
     if (!groups.find((g) => g.id === groupId).users.includes(userId)) {
       groups.find((g) => g.id === groupId).users.push(userId);
+      writeJSONFile("groupData.json", groups);
     }
   }
 
@@ -216,10 +265,12 @@ app.post("/delete-user", (req, res) => {
     const group = groups.find((group) => group.id === groupId);
     const userIdxInGroup = group.users.indexOf(id);
     group.users.splice(userIdxInGroup, 1);
+    writeJSONFile("groupData.json", groups);
   }
 
   //finally delete user
   users.splice(userIdx, 1);
+  writeJSONFile("userData.json", users);
   res.json({ status: "ok" });
 });
 

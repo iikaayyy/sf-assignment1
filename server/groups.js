@@ -1,5 +1,10 @@
+const { readJSONFile, writeJSONFile } = require("./fileOperations.js");
+
 const { users } = require("./users");
 const superAdmin = users[0];
+
+// const users = readJSONFile("userData.json");
+// const superAdmin = users[0];
 
 const groups = [];
 
@@ -43,5 +48,7 @@ groups.forEach((group) => group.addUser(superAdmin.id)); //add super admin to al
 groups[0].addUser(2);
 groups[1].addUser(2);
 groups[2].addUser(3);
+
+// writeJSONFile("groupData.json", groups);
 
 module.exports = { groups, createGroup, groupNameAvailable };

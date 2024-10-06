@@ -1,3 +1,5 @@
+const { readJSONFile, writeJSONFile } = require("./fileOperations.js");
+
 const users = [];
 const requests = [];
 const groupRequests = [];
@@ -25,6 +27,10 @@ const usernameAvailable = (arr, username) =>
 users.push(createUser("super", "123", "super@super.com", "SU"));
 users.push(createUser("yashee", "123", "y@y.com", "GA"));
 users.push(createUser("john", "123", "j@j.com", "CA"));
+
+// console.log("users.js", readJSONFile("userData.json"));
+// writeJSONFile("userData.json", users);
+// console.log("users.js", readJSONFile("userData.json"));
 
 module.exports = {
   users,
