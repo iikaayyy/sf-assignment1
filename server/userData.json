@@ -1,7 +1,12 @@
 [
   {
-    "roles": ["SU"],
-    "groups": [1, 2, 3],
+    "roles": [
+      "SU"
+    ],
+    "groups": [
+      2,
+      3
+    ],
     "username": "super",
     "password": "123",
     "email": "super@super.com",
@@ -9,21 +14,18 @@
     "avatar": "http://localhost:3000/avatars/default.png"
   },
   {
-    "roles": ["GA"],
-    "groups": [1, 2],
+    "roles": [
+      "GA"
+    ],
+    "groups": [
+      1,
+      2,
+      3
+    ],
     "username": "yashee",
     "password": "123",
     "email": "y@y.com",
     "id": 2,
-    "avatar": "http://localhost:3000/avatars/default.png"
-  },
-  {
-    "roles": ["CA"],
-    "groups": [3],
-    "username": "john",
-    "password": "123",
-    "email": "j@j.com",
-    "id": 3,
     "avatar": "http://localhost:3000/avatars/default.png"
   }
 ]

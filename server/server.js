@@ -134,7 +134,7 @@ app.post("/upload-avatar", upload.single("avatar"), (req, res) => {
 app.post("/sign-up", async (req, res) => {
   const { email, username, password } = req.body;
   let reqs = await readJSONFile("requests.json");
-  console.log(reqs);
+  // console.log(reqs);
 
   //push request to requests.json
   if (
@@ -154,10 +154,6 @@ app.get("/requests", async (req, res) => {
   res.json(requests);
 });
 
-app.get("/", (req, res) => {
-  readJSONFile("groupData.json").then((data) => res.json(data));
-});
-
 app.get("/users", (req, res) => {
   //read and return the users file
   res.json(users);
@@ -171,7 +167,7 @@ app.post("/join-group", async (req, res) => {
     !groupRequests.find((g) => g.userId === userId && g.groupId === groupId)
   ) {
     groupRequests.push({ groupName, username, groupId, userId });
-    console.log(`group reqs`, groupRequests);
+    // console.log(`group reqs`, groupRequests);
     await writeJSONFile("groupRequests.json", groupRequests);
   }
 
@@ -185,6 +181,7 @@ app.get("/join-group-reqs", (req, res) => {
 
 app.post("/modify-request", async (req, res) => {
   const { type, req: request } = req.body;
+  // console.log(request);
   const u = readJSONFile("userData.json");
 
   const idx = requests.findIndex((r) => r.username === request.username);
@@ -192,7 +189,7 @@ app.post("/modify-request", async (req, res) => {
   writeJSONFile("requests.json", requests);
   if (type === "approve") {
     users.push(createUser(request.username, request.password, request.email));
-    console.log(users.at(-1));
+    // console.log(users.at(-1));
     writeJSONFile("userData.json", users);
     res.json({ status: "added" });
   } else res.json({ status: "denied" });
@@ -203,7 +200,7 @@ app.post("/modify-group-request", (req, res) => {
     type,
     request: { userId, groupId },
   } = req.body;
-  console.log(type, userId, groupId);
+  // console.log(type, userId, groupId);
 
   if (type === "approve") {
     if (!users.find((u) => u.id === userId).groups.includes(groupId)) {
@@ -291,3 +288,5 @@ app.post("/remove-user", (req, res) => {
 server.listen(3000, () => {
   console.log(`Server listening at port 3000`);
 });
+
+module.exports = app;
