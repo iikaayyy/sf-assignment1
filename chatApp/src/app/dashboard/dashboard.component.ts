@@ -52,28 +52,8 @@ export class DashboardComponent implements OnInit {
   }
 
   join(groupName, groupId) {
-    this.group.joinGroup(groupName, groupId);
+    this.group.joinGroup(groupName, groupId).subscribe((res) => {
+      console.log(res);
+    });
   }
 }
-
-//permission to enter a group
-//create channels
-//ban user
-//remove users
-//group admin can only administer a group they created
-//promotion of users to admins
-
-//leave groups //done
-//create groups done
-//delete groups
-//delete self done
-
-//delete group -> admin or group admin
-//remove group from groups array
-//remove users from the groups users array
-
-//admin page
-//list of groups
-//list of all their users
-//add user to groups through input
-//delete user

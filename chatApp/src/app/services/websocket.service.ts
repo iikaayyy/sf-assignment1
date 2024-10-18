@@ -42,6 +42,7 @@ export class WebsocketService {
       this.addActiveUser(user.username);
     });
 
+    //receive msg event
     this.socket.on('receive-msg', (m) => {
       // if (!this.activeUsers.includes(m.username)) {
       //   this.activeUsers.push(m.username);
@@ -58,12 +59,14 @@ export class WebsocketService {
       this.messagesSubject.next([...this.messagesSubject.getValue(), m]);
     });
 
+    //when new peer joins for vidoe chat
     this.socket.on('new-peer', (data) => {
       console.log(`new peer`, data);
       this.newPeer.next(data);
     });
   }
 
+  //helper method
   onNewPeerJoined() {
     return this.newPeer.asObservable();
   }
@@ -83,6 +86,7 @@ export class WebsocketService {
     this.socket.emit('message', msgObject);
   }
 
+  //SENDING IMAGE
   sendImage(img, user, room) {
     // console.log('called');
     const msgObject = this.parseMessage(img, 'image', user, room);
@@ -91,6 +95,7 @@ export class WebsocketService {
     this.socket.emit('imageMessage', msgObject);
   }
 
+  //DISCONNECTING
   disconnect(user, room) {
     console.log('disconnected');
     const msgObject = this.parseMessage(
@@ -109,6 +114,7 @@ export class WebsocketService {
     this.socket.disconnect();
   }
 
+  //JOINING VIDEO ROOM
   joinVideoRoom(user, room) {
     const msgObject = this.parseMessage(
       `${user.username} has joined video chat room`,
@@ -121,6 +127,7 @@ export class WebsocketService {
     this.socket.emit('join-video-room', msgObject);
   }
 
+  //LEAVING VIDEO ROOM
   leaveVideoRoom(user, room) {
     const msgObject = this.parseMessage(
       `${user.username} has left video chat room`,
@@ -133,6 +140,8 @@ export class WebsocketService {
     this.socket.emit('leave-video-room', msgObject);
   }
 
+  //PRIVATE Methods
+  //add active user to users array
   private addActiveUser(username: string) {
     const activeUsers = this.activeUsersSubject.getValue();
     if (!activeUsers.includes(username)) {
@@ -140,7 +149,7 @@ export class WebsocketService {
       this.activeUsersSubject.next(activeUsers);
     }
   }
-
+  //remove active user from users array
   private removeActiveUser(username: string) {
     const activeUsers = this.activeUsersSubject.getValue();
     const index = activeUsers.indexOf(username);
@@ -150,7 +159,8 @@ export class WebsocketService {
     }
   }
 
-  private parseMessage(content, type, user, room) {
+  //helper function for sending messages
+  public parseMessage(content, type, user, room) {
     const time = new Date();
     let hours = `${time.getHours()}`;
     let minutes = `${time.getMinutes()}`;

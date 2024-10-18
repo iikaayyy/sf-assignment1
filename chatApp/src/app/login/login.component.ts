@@ -31,7 +31,11 @@ export class LoginComponent {
       });
     } else if (this.currMode === 'signup') {
       if (this.email && this.password && this.username)
-        this.user.signUp(this.email, this.username, this.password);
+        this.user
+          .signUp(this.email, this.username, this.password)
+          .subscribe((val) => {
+            console.log(val);
+          });
     }
 
     this.username = this.password = this.email = '';

@@ -87,6 +87,9 @@ export class VideoChatComponent implements OnInit, OnDestroy {
     if (!this.isRoom) {
       this.ws.disconnect(this.currUser, this.roomName);
     }
+    if (this.newPeerSubscription) {
+      this.newPeerSubscription.unsubscribe();
+    }
   }
 
   navigateBack() {

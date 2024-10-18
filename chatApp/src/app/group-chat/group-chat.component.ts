@@ -33,13 +33,12 @@ export class GroupChatComponent implements OnInit {
   }
 
   leaveGroup() {
-    this.group.removeUser(this.currUser.id, this.currGroup.id);
+    this.group.removeUser(this.currUser.id, this.currGroup?.id);
+    console.log('leaving');
     this.router.navigateByUrl('/groups');
   }
 
   joinChannel() {
-    // console.log(this.selectedChannel);
-    // console.log(this.currGroup.name);
     if (this.selectedChannel)
       this.router.navigate([
         'groups',

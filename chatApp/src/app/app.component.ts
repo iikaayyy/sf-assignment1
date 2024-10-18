@@ -12,11 +12,7 @@ import { GroupService } from './services/group.service';
 export class AppComponent implements OnInit {
   title = 'chatApp';
 
-  constructor(
-    public router: Router,
-    public user: UserService,
-    public group: GroupService
-  ) {
+  constructor(public router: Router, public user: UserService) {
     console.log('app component');
   }
 
@@ -27,13 +23,5 @@ export class AppComponent implements OnInit {
       if (val) this.router.navigateByUrl('groups');
       else this.router.navigateByUrl('login');
     });
-
-    this.user.user$.subscribe((val) => {
-      // console.log(val);
-    });
-    // console.log(this.group.getGroups());
-    // this.user.user$.subscribe((val) => {
-    //   console.log(val);
-    // });
   }
 }

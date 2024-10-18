@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { UserService } from './user.service';
 import { BehaviorSubject } from 'rxjs';
 
@@ -7,12 +7,9 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class GroupService {
-  private URL = 'http://localhost:3000';
+  URL = 'http://localhost:3000';
 
   public groups;
-
-  // = new BehaviorSubject<any>(undefined);
-  // groups$ = this.groups.asObservable();
 
   private user; //current user
 
@@ -62,7 +59,7 @@ export class GroupService {
       groupName,
       username: this.user.username,
     };
-    this.http.post(this.URL + '/join-group', body).subscribe((res) => {});
+    return this.http.post(this.URL + '/join-group', body);
   }
 
   getGroupRequests = () => this.http.get(this.URL + '/join-group-reqs');

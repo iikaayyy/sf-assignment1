@@ -1,13 +1,13 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserInterface } from '../models/user.model';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private URL = `http://localhost:3000`;
+  URL = `http://localhost:3000`;
 
   //OBSERVABLE VALUES
   private loggedIn = new BehaviorSubject<boolean>(this.getInitialLoginState());
@@ -40,19 +40,15 @@ export class UserService {
 
   //validate login details
   validateLogin = (username: string, password: string) =>
-    this.http.post<UserInterface>(this.URL + '/login', {
+    this.http.post<any>(this.URL + '/login', {
       username,
       password,
     });
 
   //sign up route
   signUp(email, username, password) {
-    console.log(email, username, password);
-    this.http
-      .post(this.URL + '/sign-up', { email, username, password })
-      .subscribe((res) => {
-        console.log(res);
-      });
+    // console.log(email, username, password);
+    return this.http.post(this.URL + '/sign-up', { email, username, password });
   }
 
   getRequests = () => this.http.get(this.URL + '/requests'); //get sign up reqs

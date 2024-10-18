@@ -11,7 +11,7 @@
 
     <div class="option-container">
       <select [(ngModel)]="selectedChannel">
-        <option *ngFor="let c of currGroup.channels">{{ c }}</option>
+        <option *ngFor="let c of currGroup?.channels">{{ c }}</option>
       </select>
       <button (click)="joinChannel()">JOIN</button>
     </div>

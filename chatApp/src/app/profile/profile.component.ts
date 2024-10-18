@@ -21,7 +21,6 @@ export class ProfileComponent implements OnInit {
 
     this.group.userGroups$.subscribe((val) => {
       this.userGroups = val;
-      // console.log(this.userGroups);
     });
   }
 
