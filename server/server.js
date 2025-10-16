@@ -23,6 +23,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/avatars", express.static(path.join(__dirname, "avatars")));
 
+// ✅ Root + Health routes
+app.get("/", (req, res) => {
+  res.send("ChatApp API is running ✅");
+});
+app.get("/health", (req, res) => {
+  res.json({ ok: true });
+});
+
 let db;
 async function connectToDB() {
   const client = new MongoClient(`mongodb://localhost:27017/`);
